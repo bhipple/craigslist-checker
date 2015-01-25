@@ -1,8 +1,12 @@
 Craiglist Checker
 =================
-Send a text when there's a new "For Sale" post for a given keyword or phrase.
+Send a text when there's a new post for a given keyword or phrase.
 
-The script sends an SMS message to a given phone number using GMail's SMTP protocol, so you'll need to add your GMail username and password to the config file.
+The script sends a message to a given address using GMail's SMTP protocol
+
+Be sure to edit the config.py file for sending credentials and target address, target CraigsList site and target category
+
+Send SMS by specifying a target address of the form 
 
 An SMS message will only be sent if a new post appears (based on the full URL).
 
@@ -17,3 +21,7 @@ Usage
     python craigslist-checker.py <search-term> <phone-number>
 
 It's useful to setup a cronjob that will run the script every N minutes.
+
+Notes
+-----
+GMail is getting picky about access, per http://joequery.me/guides/python-smtp-authenticationerror/.  You may need to disable CAPTCHA on your account at https://accounts.google.com/DisplayUnlockCaptcha
