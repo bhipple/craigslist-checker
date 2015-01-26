@@ -18,10 +18,14 @@ Install the required libraries via pip:
 
 Usage
 -----
-    python craigslist-checker.py <search-term> <phone-number>
+    python craigslist-checker.py <search-term> [<phone-number>]
 
 It's useful to setup a cronjob that will run the script every N minutes.
 
 Notes
 -----
 GMail is getting picky about access, per http://joequery.me/guides/python-smtp-authenticationerror/.  You may need to disable CAPTCHA on your account at https://accounts.google.com/DisplayUnlockCaptcha
+
+Phone number is now optional.  When present code will mail SMS to phone number; when absent code will access email target in config.py file
+
+Code now sends MIME, html and text.
