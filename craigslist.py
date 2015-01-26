@@ -33,7 +33,7 @@ def parse_results(search_term):
         else:
                 url= home_location_url + row.a['href']
         # price = row.find('span', class_='price').get_text()
-        print url
+        # print url
         create_date = row.find('time').get('datetime')
         title = row.find_all('a')[1].get_text()
         results.append({'url': url, 'create_date': create_date, 'title': title})
@@ -77,12 +77,14 @@ def send_text(toaddrs, results):
                 <html>
                         <head></head>
                         <body>
+                        <table>
         """
         text = '\n\n'
         for result in results:
                 text = text +  '\n\n' + result['create_date'] + ' ' + result['title'] + ' ' + result['url']
                 html = html + '<tr>' + '<td>' + result['create_date'] + '</td>' + '<td>' + result['title'] + '</td>' + '<td>' + result['url'] + '</td><tr>'
         html=html + """
+                </table>
                 </body>
                 </html>
         """
