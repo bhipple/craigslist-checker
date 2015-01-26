@@ -88,8 +88,8 @@ def send_text(toaddrs, results):
                 </body>
                 </html>
         """
-        print text
-        print html
+        #print text
+        #print html
         print "[{0}] There are new results - sending message to {0}".format(get_current_time(), toaddrs)
 
         # Record the MIME types of both parts - text/plain and text/html.
