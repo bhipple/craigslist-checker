@@ -19,10 +19,10 @@ def parseResults(search_term):
     rows = soup.find('div', 'content').find_all('p', 'row')
     for row in rows:
         url = 'http://newyork.craigslist.org' + row.a['href']
-        # price = row.find('span', class_='price').get_text()
+        price = row.find('span', class_='price').get_text() or ""
         create_date = row.find('time').get('datetime')
         title = row.find_all('a')[1].get_text()
-        results.append({'url': url, 'create_date': create_date, 'title': title})
+        results.append({'url': url, 'price': price, 'create_date': create_date, 'title': title})
     return results
 
 def writeResults(results):
@@ -64,7 +64,8 @@ def sendEmail(email_address, msg):
 def formatMsg(results, TERM):
     message = "Hey - there are new Craigslist posts for: {0}".format(TERM.strip())
 
-    message = message + "\n\n" + "\n".join(map(lambda x: x['url'], results))
+    message = message + "\n\n" + "\n".join(map(lambda x: x['url'] + " : " +
+        x['title'] + " " + x['price'] + "\n", results))
     return message
 
 def getCurrentTime():
@@ -79,6 +80,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     results = parseResults(TERM)
+    results = filter(lambda res: res['price'] == "" or int(res['price'][1:]) < 500, results)
 
     # Send the SMS message if there are new results
     if hasNewRecords(results):

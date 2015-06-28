@@ -1,0 +1,2 @@
+#!/bin/sh
+python craigslist.py "bicycle 50cm" "benjamin.hipple@gmail.com"
