@@ -7,13 +7,6 @@ import os
 import smtplib
 import config
 
-"""
-EMAIL_ADDRESSES = [ "benjamin.hipple@gmail.com",
-                    "inneekim@gmail.com",
-                    "chris.hipple@gmail.com",
-                    "alexanderthegracie@gmail.com"
-                  ]
-"""
 EMAIL_ADDRESSES = [ "benjamin.hipple@gmail.com",
                     "inneekim@gmail.com",
                   ]
