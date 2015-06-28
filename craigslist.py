@@ -52,7 +52,7 @@ def writeResults(results):
         dw.writer.writerow(dw.fieldnames)
         dw.writerows(results)
 
-def hasNewRecords(results):
+def filterToNewPosts(results):
     current_posts = [x['url'] for x in results]
     fields = results[0].keys()
     if not os.path.exists('results.csv'):
@@ -62,13 +62,8 @@ def hasNewRecords(results):
         reader = csv.DictReader(f, fieldnames=fields, delimiter='|')
         seen_posts = [row['url'] for row in reader]
 
-    is_new = False
-    for post in current_posts:
-        if post in seen_posts:
-            pass
-        else:
-            is_new = True
-    return is_new
+    newPosts = filter(lambda post: post['url'] not in seen_posts, results)
+    return newPosts
 
 def sendEmail(addr, msg):
     fromaddr = "Craigslist Checker"
@@ -97,8 +92,9 @@ if __name__ == '__main__':
     map(lambda term: results.extend(parseResults(term)), QUERIES)
     results = filter(lambda res: res['price'] == "" or int(res['price'][1:]) <= MAX_PRICE, results)
     # Send the SMS message if there are new results
-    if hasNewRecords(results):
-        message = formatMsg(results)
+    newPosts = filterToNewPosts(results)
+    if len(newPosts):
+        message = formatMsg(newPosts)
 
         print "[{0}] There are new results - sending email message".format(getCurrentTime())
         map(lambda addr: sendEmail(addr, message), EMAIL_ADDRESSES)
