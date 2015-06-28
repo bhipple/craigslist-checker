@@ -8,7 +8,7 @@ import smtplib
 import config
 
 # Craigslist search URL
-BASE_URL = ('http://chicago.craigslist.org/search/'
+BASE_URL = ('http://newyork.craigslist.org/search/'
             '?sort=rel&areaID=11&subAreaID=&query={0}&catAbb=sss')
 
 def parseResults(search_term):
@@ -18,7 +18,7 @@ def parseResults(search_term):
     soup = BeautifulSoup(urlopen(search_url).read())
     rows = soup.find('div', 'content').find_all('p', 'row')
     for row in rows:
-        url = 'http://chicago.craigslist.org' + row.a['href']
+        url = 'http://newyork.craigslist.org' + row.a['href']
         # price = row.find('span', class_='price').get_text()
         create_date = row.find('time').get('datetime')
         title = row.find_all('a')[1].get_text()
@@ -63,6 +63,8 @@ def sendEmail(email_address, msg):
 
 def formatMsg(results, TERM):
     message = "Hey - there are new Craigslist posts for: {0}".format(TERM.strip())
+
+    message = message + "\n\n" + "\n".join(map(lambda x: x['url'], results))
     return message
 
 def getCurrentTime():
