@@ -1,4 +1,4 @@
 #!/bin/sh
-python craigslist.py "bicycle 49cm"
-python craigslist.py "bicycle 50cm"
-python craigslist.py "bicycle 52cm"
+python /home/smilodon/craigslist-checker/craigslist.py "bicycle 49cm"
+python /home/smilodon/craigslist-checker/craigslist.py "bicycle 50cm"
+python /home/smilodon/craigslist-checker/craigslist.py "bicycle 52cm"
