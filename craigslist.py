@@ -51,9 +51,9 @@ def has_new_records(results):
             is_new = True
     return is_new
 
-def send_text(phone_number, msg):
+def send_email(email_address, msg):
     fromaddr = "Craigslist Checker"
-    toaddrs = phone_number + "@txt.att.net"
+    toaddrs = email_address
     msg = ("From: {0}\r\nTo: {1}\r\n\r\n{2}").format(fromaddr, toaddrs, msg)
     server = smtplib.SMTP('smtp.gmail.com:587')
     server.starttls()
@@ -67,22 +67,18 @@ def get_current_time():
 if __name__ == '__main__':
     try:
         TERM = sys.argv[1]
-        PHONE_NUMBER = sys.argv[2].strip().replace('-', '')
+        EMAIL_ADDRESS = sys.argv[2].strip().replace('-', '')
     except:
-        print "You need to include a search term and a 10-digit phone number!\n"
-        sys.exit(1)
-
-    if len(PHONE_NUMBER) != 10:
-        print "Phone numbers must be 10 digits!\n"
+        print "You need to include a search term and an email address!\n"
         sys.exit(1)
 
     results = parse_results(TERM)
-    
+
     # Send the SMS message if there are new results
     if has_new_records(results):
         message = "Hey - there are new Craigslist posts for: {0}".format(TERM.strip())
-        print "[{0}] There are new results - sending text message to {0}".format(get_current_time(), PHONE_NUMBER)
-        send_text(PHONE_NUMBER, message)
+        print "[{0}] There are new results - sending email message to {0}".format(get_current_time(), EMAIL_ADDRESS)
+        send_email(EMAIL_ADDRESS, message)
         write_results(results)
     else:
         print "[{0}] No new results - will try again later".format(get_current_time())
