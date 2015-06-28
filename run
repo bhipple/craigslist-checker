@@ -1,4 +1,3 @@
 #!/bin/sh
-python /home/smilodon/craigslist-checker/craigslist.py "bicycle 49cm"
-python /home/smilodon/craigslist-checker/craigslist.py "bicycle 50cm"
-python /home/smilodon/craigslist-checker/craigslist.py "bicycle 52cm"
+cd /home/smilodon/craigslist-checker
+python craigslist.py

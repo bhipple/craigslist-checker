@@ -7,16 +7,26 @@ import os
 import smtplib
 import config
 
+## ============================================================================
+##                          Configurable Variables
+## ============================================================================
+# Addresses to which results should be emailed
 EMAIL_ADDRESSES = [ "benjamin.hipple@gmail.com",
                     "inneekim@gmail.com",
                   ]
+
+# Search queries to execute
+QUERIES = ["bicycle 49cm", "bicycle 50cm", "bicycle 52cm"]
 
 # Craigslist search URL
 BASE_URL = ('http://newyork.craigslist.org/search/'
             '?sort=rel&areaID=11&subAreaID=&query={0}&catAbb=sss')
 
+# Sender email and password are included from config.py
+## ============================================================================
+
 def parseResults(search_term):
-    results = []
+    results = set()
     search_term = search_term.strip().replace(' ', '+')
     search_url = BASE_URL.format(search_term)
     soup = BeautifulSoup(urlopen(search_url).read())
@@ -28,7 +38,7 @@ def parseResults(search_term):
         if price != "": price = price.get_text()
         create_date = row.find('time').get('datetime')
         title = row.find_all('a')[1].get_text()
-        results.append({'url': url, 'price': price, 'create_date': create_date, 'title': title})
+        results.add({'url': url, 'price': price, 'create_date': create_date, 'title': title})
     return results
 
 def writeResults(results):
@@ -60,15 +70,15 @@ def hasNewRecords(results):
 def sendEmail(addr, msg):
     fromaddr = "Craigslist Checker"
     toaddrs = addr
-    msg = ("From: {0}\r\nTo: {1}\r\nSubject: {2}\r\n\r\n{3}").format(fromaddr, toaddrs, "New results hype!", msg)
+    msg = ("From: {0}\r\nTo: {1}\r\n\r\n{2}").format(fromaddr, toaddrs, msg)
     server = smtplib.SMTP('smtp.gmail.com:587')
     server.starttls()
     server.login(config.email['username'], config.email['password'])
     server.sendmail(fromaddr, toaddrs, msg)
     server.quit()
 
-def formatMsg(results, TERM):
-    message = "Hey - there are new Craigslist posts for: {0}".format(TERM.strip())
+def formatMsg(results):
+    message = "Hey - there are new Craigslist posts!"
 
     message = message + "\n\n" + "\n".join(map(lambda x: x['url'] + " : " +
         x['title'] + " " + x['price'] + "\n", results))
@@ -78,20 +88,16 @@ def getCurrentTime():
     return datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')
 
 if __name__ == '__main__':
-    try:
-        TERM = sys.argv[1]
-    except:
-        print "You need to include a search term\n"
-        sys.exit(1)
 
-    results = parseResults(TERM)
+    results = set()
+    map(lambda term: results.union(parseResults(term)), QUERIES)
     results = filter(lambda res: res['price'] == "" or int(res['price'][1:]) < 500, results)
 
     # Send the SMS message if there are new results
     if hasNewRecords(results):
-        message = formatMsg(results, TERM)
+        message = formatMsg(results)
 
-        print "[{0}] There are new results - sending email message at {0}".format(getCurrentTime())
+        print "[{0}] There are new results - sending email message".format(getCurrentTime())
         map(lambda addr: sendEmail(addr, message), EMAIL_ADDRESSES)
         writeResults(results)
     else:
