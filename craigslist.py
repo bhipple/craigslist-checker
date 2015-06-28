@@ -7,6 +7,17 @@ import os
 import smtplib
 import config
 
+"""
+EMAIL_ADDRESSES = [ "benjamin.hipple@gmail.com",
+                    "inneekim@gmail.com",
+                    "chris.hipple@gmail.com",
+                    "alexanderthegracie@gmail.com"
+                  ]
+"""
+EMAIL_ADDRESSES = [ "benjamin.hipple@gmail.com",
+                    "inneekim@gmail.com",
+                  ]
+
 # Craigslist search URL
 BASE_URL = ('http://newyork.craigslist.org/search/'
             '?sort=rel&areaID=11&subAreaID=&query={0}&catAbb=sss')
@@ -19,7 +30,9 @@ def parseResults(search_term):
     rows = soup.find('div', 'content').find_all('p', 'row')
     for row in rows:
         url = 'http://newyork.craigslist.org' + row.a['href']
-        price = row.find('span', class_='price').get_text() or ""
+
+        price = row.find('span', class_='price') or ""
+        if price != "": price = price.get_text()
         create_date = row.find('time').get('datetime')
         title = row.find_all('a')[1].get_text()
         results.append({'url': url, 'price': price, 'create_date': create_date, 'title': title})
@@ -51,10 +64,10 @@ def hasNewRecords(results):
             is_new = True
     return is_new
 
-def sendEmail(email_address, msg):
+def sendEmail(addr, msg):
     fromaddr = "Craigslist Checker"
-    toaddrs = email_address
-    msg = ("From: {0}\r\nTo: {1}\r\n\r\n{2}").format(fromaddr, toaddrs, msg)
+    toaddrs = addr
+    msg = ("From: {0}\r\nTo: {1}\r\nSubject: {2}\r\n\r\n{3}").format(fromaddr, toaddrs, "New results hype!", msg)
     server = smtplib.SMTP('smtp.gmail.com:587')
     server.starttls()
     server.login(config.email['username'], config.email['password'])
@@ -74,9 +87,8 @@ def getCurrentTime():
 if __name__ == '__main__':
     try:
         TERM = sys.argv[1]
-        EMAIL_ADDRESS = sys.argv[2].strip().replace('-', '')
     except:
-        print "You need to include a search term and an email address!\n"
+        print "You need to include a search term\n"
         sys.exit(1)
 
     results = parseResults(TERM)
@@ -86,8 +98,8 @@ if __name__ == '__main__':
     if hasNewRecords(results):
         message = formatMsg(results, TERM)
 
-        print "[{0}] There are new results - sending email message to {0}".format(getCurrentTime(), EMAIL_ADDRESS)
-        sendEmail(EMAIL_ADDRESS, message)
+        print "[{0}] There are new results - sending email message at {0}".format(getCurrentTime())
+        map(lambda addr: sendEmail(addr, message), EMAIL_ADDRESSES)
         writeResults(results)
     else:
         print "[{0}] No new results - will try again later".format(getCurrentTime())
