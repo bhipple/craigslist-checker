@@ -1,2 +1,4 @@
 #!/bin/sh
-python craigslist.py "bicycle 50cm" "benjamin.hipple@gmail.com"
+python craigslist.py "bicycle 49cm"
+python craigslist.py "bicycle 50cm"
+python craigslist.py "bicycle 52cm"
