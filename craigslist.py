@@ -15,7 +15,7 @@ EMAIL_ADDRESSES = [ "benjamin.hipple@gmail.com",
                   ]
 
 # Search queries to execute
-QUERIES = ["bicycle 49cm", "bicycle 50cm"]
+QUERIES = ["bicycle 60cm"]
 
 # Maximum price; items with no price will still be shown
 MAX_PRICE = 1200
