@@ -12,7 +12,6 @@ import config
 ## ============================================================================
 # Addresses to which results should be emailed
 EMAIL_ADDRESSES = [ "benjamin.hipple@gmail.com",
-                    "inneekim@gmail.com",
                   ]
 
 # Search queries to execute
